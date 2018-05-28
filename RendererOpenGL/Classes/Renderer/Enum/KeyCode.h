@@ -1,0 +1,38 @@
+#pragma once
+
+enum class KeyCode
+{
+	A = 65,
+	B,
+	C,
+	D,
+	E,
+	F,
+	G,
+	H,
+	I,
+	J,
+	K,
+	L,
+	M,
+	N,
+	O,
+	P,
+	Q,
+	R,
+	S,
+	T,
+	U,
+	V,
+	W,
+	X,
+	Y,
+	Z,
+	Space = 32,
+	RightArrow = 262,
+	LeftArrow,
+	DownArrow,
+	UpArrow,
+	Escape = 256,
+	Enter
+};
