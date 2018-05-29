@@ -1,10 +1,10 @@
 #include "../Classes/Renderer/Core.h"
 
-class simple_texture
+class simple_texture_coords
 	: public Core
 {
 public:
-	simple_texture()
+	simple_texture_coords()
 		: Core(800, 600, "OpenGL")
 	{}
 
@@ -13,27 +13,31 @@ public:
 		const char* vertex_source
 		{
 			"#version 450 core\n"
+			"layout(location = 0) in vec4 vPos;\n"
+			"layout(location = 1) in vec2 vUV;\n"
+			"out VS_OUT\n"
+			"{\n"
+			"	vec2 uv;\n"
+			"}vs_out;\n"
 			"void main()\n"
 			"{\n"
-			"	vec4 vertices[4] = vec4[4]\n"
-			"	(\n"
-			"		vec4(-1.0, -1.0, 0.0, 1.0),\n"
-			"		vec4(1.0, -1.0, 0.0, 1.0),\n"
-			"		vec4(-1.0, 1.0, 0.0, 1.0),\n"
-			"		vec4(1.0, 1.0, 0.0, 1.0)\n"
-			"	);\n"
-			"	gl_Position = vertices[gl_VertexID];\n"
+			"	gl_Position = vPos;\n"
+			"	vs_out.uv = vUV;\n"
 			"}"
 		};
 
 		const char* fragment_source
 		{
 			"#version 450 core\n"
+			"in VS_OUT\n"
+			"{\n"
+			"	vec2 uv;\n"
+			"}fs_in;\n"
 			"out vec4 FragColor;\n"
 			"layout(binding = 0) uniform sampler2D s;\n"
 			"void main()\n"
 			"{\n"
-			"	FragColor = texelFetch(s, ivec2(gl_FragCoord.xy / 35.0), 0);\n"
+			"	FragColor = texture(s, fs_in.uv);\n"
 			"}"
 		};
 
@@ -53,25 +57,54 @@ public:
 		glDeleteShader(vertex_shader);
 		glDeleteShader(fragment_shader);
 
+		struct vertices
+		{
+			vec2 pos[4]
+			{
+				vec2(-1.0f, -1.0f), vec2(1.0f, -1.0f), vec2(-1.0f, 1.0f), vec2(1.0f, 1.0f)
+			};
+			vec2 uv[4]
+			{
+				vec2(0.0f), vec2(1.0f, 0.0f), vec2(0.0f, 1.0f), vec2(1.0f)
+			};
+		};
+
+		vertices v;
+
+		glCreateBuffers(1, &vertex_buffer);
+		glNamedBufferStorage(vertex_buffer, sizeof(vertices), &v, GL_DYNAMIC_STORAGE_BIT);
+
+		glCreateVertexArrays(1, &vertex_array);
+		glVertexArrayAttribFormat(vertex_array, 0, 2, GL_FLOAT, GL_FALSE, offsetof(vertices, pos));
+		glEnableVertexArrayAttrib(vertex_array, 0);
+		glVertexArrayAttribBinding(vertex_array, 0, 0);
+		glVertexArrayAttribFormat(vertex_array, 1, 2, GL_FLOAT, GL_FALSE, offsetof(vertices, uv));
+		glEnableVertexArrayAttrib(vertex_array, 1);
+		glVertexArrayAttribBinding(vertex_array, 1, 0);
+		glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(vec2));
+
 		glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-		glTextureStorage2D(texture, 1, GL_RGBA32F, 800, 600);
+		glTextureStorage2D(texture, 1, GL_RGBA32F, 250, 250);
 
-		vec4 *data = new vec4[800 * 600];
-		generate_texture(data, 800, 600);
+		vec4 *data = new vec4[250 * 250];
+		generate_texture(data, 250, 250);
 
-		glTextureSubImage2D(texture, 0, 0, 0, 800, 600, GL_RGBA, GL_FLOAT, data);
+		glTextureSubImage2D(texture, 0, 0, 0, 250, 250, GL_RGBA, GL_FLOAT, data);
 		glBindTextureUnit(0, texture);
 	}
 
 	virtual void Update() override
 	{
 		glUseProgram(shader_program);
+		glBindVertexArray(vertex_array);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 
 	virtual void End() override
 	{
 		glDeleteProgram(shader_program);
+		glDeleteBuffers(1, &vertex_buffer);
+		glDeleteVertexArrays(1, &vertex_array);
 		glDeleteTextures(1, &texture);
 	}
 
@@ -91,5 +124,7 @@ public:
 
 private:
 	GLuint shader_program;
+	GLuint vertex_array;
+	GLuint vertex_buffer;
 	GLuint texture;
 };

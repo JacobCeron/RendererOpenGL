@@ -142,9 +142,12 @@
     <ClCompile Include="Classes\Renderer\Window.cpp" />
     <ClCompile Include="OpenGL\src\glad.c" />
     <ClCompile Include="src\atomic_counter_variable.cpp" />
+    <ClCompile Include="src\multisample_textures.cpp" />
     <ClCompile Include="src\shader_storage_buffer.cpp" />
     <ClCompile Include="src\simple_texture.cpp" />
+    <ClCompile Include="src\simple_texture_coords.cpp" />
     <ClCompile Include="src\simple_triangle.cpp" />
+    <ClCompile Include="src\texture_sampler.cpp" />
     <ClCompile Include="src\uniform_buffer_block.cpp" />
     <ClCompile Include="src\vertex_array_data.cpp" />
   </ItemGroup>
