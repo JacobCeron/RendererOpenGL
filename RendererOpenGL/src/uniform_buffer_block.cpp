@@ -103,5 +103,5 @@ private:
 };
 
 #if 0
-	CORE_MAIN(uniform_buffer_block)
+CORE_MAIN(uniform_buffer_block)
 #endif
