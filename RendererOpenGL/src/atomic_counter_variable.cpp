@@ -1,14 +1,16 @@
 #include "../Classes/Renderer/Core.h"
 
-class simple_triangle
+#include <iostream>
+
+class atomic_counter_variable
 	: public Core
 {
 public:
-	simple_triangle()
+	atomic_counter_variable()
 		: Core(800, 600, "OpenGL")
 	{}
 
-	virtual void Start() override 
+	virtual void Start() override
 	{
 		const char* vertex_source
 		{
@@ -29,9 +31,15 @@ public:
 		{
 			"#version 450 core\n"
 			"out vec4 FragColor;\n"
+			"layout(binding = 0) uniform atomic_uint counter;\n"
+			"layout(location = 0) uniform uint time;\n"
 			"void main()\n"
 			"{\n"
-			"	FragColor = vec4(1.0, 0.0, 0.0, 0.0);\n"
+			"	uint count = atomicCounterIncrement(counter);\n"
+			"	if (count < time)\n"
+			"		FragColor = vec4(1.0);\n"
+			"	else\n"
+			"		FragColor = vec4(0.0);\n"
 			"}"
 		};
 
@@ -50,19 +58,33 @@ public:
 
 		glDeleteShader(vertex_shader);
 		glDeleteShader(fragment_shader);
+
+		glCreateBuffers(1, &atomic_counter);
+		glNamedBufferStorage(atomic_counter, sizeof(GLuint), nullptr, GL_MAP_WRITE_BIT);
+		glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomic_counter);
 	}
-	
+
 	virtual void Update() override
 	{
+		GLuint* data = (GLuint*)glMapNamedBufferRange(atomic_counter, 0, sizeof(GLuint), GL_MAP_WRITE_BIT);
+		*data = 0;
+		glUnmapNamedBuffer(atomic_counter);
+
+		static float time{ 0.0f };
+		time += Time::deltaTime * 500.0f;
+
 		glUseProgram(shader_program);
+		glUniform1ui(0, static_cast<GLuint>(time));
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 
 	virtual void End() override
 	{
 		glDeleteProgram(shader_program);
+		glDeleteBuffers(1, &atomic_counter);
 	}
 
 private:
 	GLuint shader_program;
+	GLuint atomic_counter;
 };

@@ -1,27 +1,25 @@
 #include "../Classes/Renderer/Core.h"
 
-class simple_triangle
+class shader_storage_buffer
 	: public Core
 {
 public:
-	simple_triangle()
+	shader_storage_buffer()
 		: Core(800, 600, "OpenGL")
 	{}
 
-	virtual void Start() override 
+	virtual void Start() override
 	{
 		const char* vertex_source
 		{
 			"#version 450 core\n"
+			"layout(std430, binding = 0) buffer storage\n"
+			"{\n"
+			"	vec4 vPos[];\n"
+			"};\n"
 			"void main()\n"
 			"{\n"
-			"	vec4 vertices[3] = vec4[3]\n"
-			"	(\n"
-			"		vec4(-0.5, -0.5, 0.0, 1.0),\n"
-			"		vec4(0.5, -0.5, 0.0, 1.0),\n"
-			"		vec4(0.0, 0.5, 0.0, 1.0)\n"
-			"	);\n"
-			"	gl_Position = vertices[gl_VertexID];\n"
+			"	gl_Position = vPos[gl_VertexID];\n"
 			"}"
 		};
 
@@ -31,7 +29,7 @@ public:
 			"out vec4 FragColor;\n"
 			"void main()\n"
 			"{\n"
-			"	FragColor = vec4(1.0, 0.0, 0.0, 0.0);\n"
+			"	FragColor = vec4(0.0, 1.0, 1.0, 0.0);\n"
 			"}"
 		};
 
@@ -50,10 +48,26 @@ public:
 
 		glDeleteShader(vertex_shader);
 		glDeleteShader(fragment_shader);
+
+		vec4 vertices[]
+		{
+			vec4(-0.5f, -0.5f, 0.0f, 1.0f), vec4(0.5f, -0.5f, 0.0f, 1.0f), vec4(0.0f, 0.5f, 0.0f, 1.0f)
+		};
+
+		glCreateBuffers(1, &storage_buffer);
+		glNamedBufferStorage(storage_buffer, sizeof(vertices), vertices, GL_MAP_WRITE_BIT);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, storage_buffer);
 	}
-	
+
 	virtual void Update() override
 	{
+		static float time{ 0.0f };
+		time -= Time::deltaTime;
+
+		void* ptr = glMapNamedBufferRange(storage_buffer, 0, sizeof(float), GL_MAP_WRITE_BIT);
+		memcpy(ptr, &time, sizeof(float));
+		glUnmapNamedBuffer(storage_buffer);
+
 		glUseProgram(shader_program);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
@@ -61,8 +75,10 @@ public:
 	virtual void End() override
 	{
 		glDeleteProgram(shader_program);
+		glDeleteBuffers(1, &storage_buffer);
 	}
 
 private:
 	GLuint shader_program;
+	GLuint storage_buffer;
 };

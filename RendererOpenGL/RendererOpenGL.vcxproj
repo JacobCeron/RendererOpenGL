@@ -141,7 +141,12 @@
     <ClCompile Include="Classes\Renderer\Time.cpp" />
     <ClCompile Include="Classes\Renderer\Window.cpp" />
     <ClCompile Include="OpenGL\src\glad.c" />
+    <ClCompile Include="src\atomic_counter_variable.cpp" />
+    <ClCompile Include="src\shader_storage_buffer.cpp" />
+    <ClCompile Include="src\simple_texture.cpp" />
     <ClCompile Include="src\simple_triangle.cpp" />
+    <ClCompile Include="src\uniform_buffer_block.cpp" />
+    <ClCompile Include="src\vertex_array_data.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Classes\maths\maths.h" />
