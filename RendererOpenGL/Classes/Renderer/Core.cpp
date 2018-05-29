@@ -2,7 +2,7 @@
 #include <iostream>
 
 Core::Core()
-	: window(800, 600, "Test")
+	: window(800, 600, "OpenGL")
 {}
 
 Core::Core(int width, int height, const char* name)

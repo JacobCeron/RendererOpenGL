@@ -4,10 +4,6 @@ class shader_storage_buffer
 	: public Core
 {
 public:
-	shader_storage_buffer()
-		: Core(800, 600, "OpenGL")
-	{}
-
 	virtual void Start() override
 	{
 		const char* vertex_source

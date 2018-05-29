@@ -4,10 +4,6 @@ class simple_triangle
 	: public Core
 {
 public:
-	simple_triangle()
-		: Core(800, 600, "OpenGL")
-	{}
-
 	virtual void Start() override 
 	{
 		const char* vertex_source

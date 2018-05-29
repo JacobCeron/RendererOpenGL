@@ -4,10 +4,6 @@ class multisample_texture
 	: public Core
 {
 public:
-	multisample_texture()
-		: Core(800, 600, "OpenGL")
-	{}
-
 	virtual void Start() override
 	{
 		const char* vertex_source
@@ -153,3 +149,7 @@ private:
 	GLuint texture[2];
 	GLuint sampler;
 };
+
+#if 0
+CORE_MAIN(multisample_texture)
+#endif

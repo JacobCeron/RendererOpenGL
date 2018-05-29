@@ -5,10 +5,6 @@ class texture_mipmap
 	: public Core
 {
 public:
-	texture_mipmap()
-		: Core(800, 600, "OpenGL")
-	{}
-
 	virtual void Start() override
 	{
 		const char* vertex_source
@@ -177,6 +173,6 @@ private:
 	GLuint texture;
 };
 
-#if 1
+#if 0
 CORE_MAIN(texture_mipmap)
 #endif

@@ -6,10 +6,6 @@ class atomic_counter_variable
 	: public Core
 {
 public:
-	atomic_counter_variable()
-		: Core(800, 600, "OpenGL")
-	{}
-
 	virtual void Start() override
 	{
 		const char* vertex_source

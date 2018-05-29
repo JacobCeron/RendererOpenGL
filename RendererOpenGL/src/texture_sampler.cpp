@@ -4,10 +4,6 @@ class texture_sampler
 	: public Core
 {
 public:
-	texture_sampler()
-		: Core(800, 600, "OpenGL")
-	{}
-
 	virtual void Start() override
 	{
 		const char* vertex_source
