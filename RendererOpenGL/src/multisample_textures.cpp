@@ -153,3 +153,7 @@ private:
 	GLuint texture[2];
 	GLuint sampler;
 };
+
+#if 0
+CORE_MAIN(multisample_texture)
+#endif
