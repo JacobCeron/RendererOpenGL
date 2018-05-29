@@ -20,10 +20,10 @@ public:
 };
 
 #define CORE_MAIN(a)								\
-int main()									\
-{										\
-	a *app = new a;								\
-	app->Run();								\
-	delete app;								\
-	return 0;								\
+int main()											\
+{													\
+	a *app = new a;									\
+	app->Run();										\
+	delete app;										\
+	return 0;										\
 }													
