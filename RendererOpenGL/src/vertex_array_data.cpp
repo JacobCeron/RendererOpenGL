@@ -4,6 +4,10 @@ class vertex_array_data
 	: public Core
 {
 public:
+	vertex_array_data()
+		: Core(800, 600, "OpenGL")
+	{}
+
 	virtual void Start() override
 	{
 		const char* vertex_source

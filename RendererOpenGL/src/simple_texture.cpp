@@ -4,6 +4,10 @@ class simple_texture
 	: public Core
 {
 public:
+	simple_texture()
+		: Core(800, 600, "OpenGL")
+	{}
+
 	virtual void Start() override
 	{
 		const char* vertex_source

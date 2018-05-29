@@ -150,7 +150,6 @@
     <ClCompile Include="src\texture_filtering.cpp" />
     <ClCompile Include="src\texture_mipmap.cpp" />
     <ClCompile Include="src\texture_sampler.cpp" />
-    <ClCompile Include="src\texture_wrap.cpp" />
     <ClCompile Include="src\uniform_buffer_block.cpp" />
     <ClCompile Include="src\vertex_array_data.cpp" />
   </ItemGroup>

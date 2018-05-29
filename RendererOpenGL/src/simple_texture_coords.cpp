@@ -4,6 +4,10 @@ class simple_texture_coords
 	: public Core
 {
 public:
+	simple_texture_coords()
+		: Core(800, 600, "OpenGL")
+	{}
+
 	virtual void Start() override
 	{
 		const char* vertex_source

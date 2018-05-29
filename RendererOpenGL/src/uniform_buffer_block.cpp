@@ -5,6 +5,10 @@ class uniform_buffer_block
 	: public Core
 {
 public:
+	uniform_buffer_block()
+		: Core(800, 600, "OpenGL")
+	{}
+
 	virtual void Start() override
 	{
 		const char* vertex_source
