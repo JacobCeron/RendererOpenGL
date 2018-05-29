@@ -128,3 +128,7 @@ private:
 	GLuint vertex_buffer;
 	GLuint texture;
 };
+
+#if 0
+CORE_MAIN(simple_texture_coords)
+#endif

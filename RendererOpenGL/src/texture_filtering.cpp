@@ -1,28 +1,24 @@
 #include "../Classes/Renderer/Core.h"
 
-class vertex_array_data
+class texture_filtering
 	: public Core
 {
 public:
-	vertex_array_data()
-		: Core(800, 600, "OpenGL")
-	{}
-
 	virtual void Start() override
 	{
 		const char* vertex_source
 		{
 			"#version 450 core\n"
 			"layout(location = 0) in vec4 vPos;\n"
-			"layout(location = 1) in vec4 vColor;\n"
+			"layout(location = 1) in vec2 vUV;\n"
 			"out VS_OUT\n"
 			"{\n"
-			"	vec4 color;\n"
+			"	vec2 uv;\n"
 			"}vs_out;\n"
 			"void main()\n"
 			"{\n"
 			"	gl_Position = vPos;\n"
-			"	vs_out.color = vColor;\n"
+			"	vs_out.uv = vUV;\n"
 			"}"
 		};
 
@@ -31,12 +27,13 @@ public:
 			"#version 450 core\n"
 			"in VS_OUT\n"
 			"{\n"
-			"	vec4 color;\n"
+			"	vec2 uv;\n"
 			"}fs_in;\n"
 			"out vec4 FragColor;\n"
+			"layout(binding = 0) uniform sampler2D s;\n"
 			"void main()\n"
 			"{\n"
-			"	FragColor = fs_in.color;\n"
+			"	FragColor = texture(s, fs_in.uv);\n"
 			"}"
 		};
 
@@ -58,40 +55,47 @@ public:
 
 		struct vertices
 		{
-			vec2 pos[3]
+			vec2 pos[4]
 			{
-				vec2(-0.5f), vec2(0.5f, -0.5f), vec2(0.0f, 0.5f)
+				vec2(-1.0f, -1.0f), vec2(1.0f, -1.0f), vec2(-1.0f, 1.0f), vec2(1.0f, 1.0f)
 			};
-
-			vec3 color[3]
+			vec2 uv[4]
 			{
-				vec3(1.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f)
+				vec2(0.0f), vec2(1.0f, 0.0f), vec2(0.0f, 1.0f), vec2(1.0f)
 			};
 		};
 
 		vertices v;
 
 		glCreateBuffers(1, &vertex_buffer);
-		glNamedBufferStorage(vertex_buffer, sizeof(vertices), &v, GL_MAP_WRITE_BIT);
+		glNamedBufferStorage(vertex_buffer, sizeof(v), &v, GL_MAP_WRITE_BIT);
 
 		glCreateVertexArrays(1, &vertex_array);
 		glVertexArrayAttribFormat(vertex_array, 0, 2, GL_FLOAT, GL_FALSE, offsetof(vertices, pos));
 		glEnableVertexArrayAttrib(vertex_array, 0);
 		glVertexArrayAttribBinding(vertex_array, 0, 0);
-		glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(vec2));
-		glVertexArrayAttribFormat(vertex_array, 1, 3, GL_FLOAT, GL_FALSE, offsetof(vertices, color));
+		glVertexArrayAttribFormat(vertex_array, 1, 2, GL_FLOAT, GL_FALSE, offsetof(vertices, uv));
 		glEnableVertexArrayAttrib(vertex_array, 1);
-		glVertexArrayAttribBinding(vertex_array, 1, 1);
-		glVertexArrayVertexBuffer(vertex_array, 1, vertex_buffer, 0, sizeof(vec3));
+		glVertexArrayAttribBinding(vertex_array, 1, 0);
+		glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(vec2));
 
-		Window::current->setColor(vec4(0.5f));
+		glCreateTextures(GL_TEXTURE_2D, 1, &texture);
+		glTextureStorage2D(texture, 1, GL_RGBA32F, 120, 120);
+
+		vec4* data = new vec4[120 * 120];
+		generate_texture(data, 120, 120);
+
+		glTextureSubImage2D(texture, 0, 0, 0, 120, 120, GL_RGBA, GL_FLOAT, data);
+		glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glBindTextureUnit(0, texture);
 	}
 
 	virtual void Update() override
 	{
 		glUseProgram(shader_program);
 		glBindVertexArray(vertex_array);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 
 	virtual void End() override
@@ -99,14 +103,30 @@ public:
 		glDeleteProgram(shader_program);
 		glDeleteVertexArrays(1, &vertex_array);
 		glDeleteBuffers(1, &vertex_buffer);
+		glDeleteTextures(1, &texture);
+	}
+
+	void generate_texture(vec4* data, size_t w, size_t h)
+	{
+		for (size_t i{ 0 }; i < h; i++)
+		{
+			for (size_t j{ 0 }; j < w; j++)
+			{
+				if (j % 2 == 0 && i % 2 == 0)
+					data[j + w * i] = vec4(1.0f, 1.0f, 0.0f, 0.0f);
+				else
+					data[j + w * i] = vec4(0.0f, 1.0f, 1.0f, 0.0f);
+			}
+		}
 	}
 
 private:
 	GLuint shader_program;
 	GLuint vertex_array;
 	GLuint vertex_buffer;
+	GLuint texture;
 };
 
 #if 0
-CORE_MAIN(vertex_array_data)
+CORE_MAIN(texture_filtering)
 #endif

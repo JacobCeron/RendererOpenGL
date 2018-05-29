@@ -101,3 +101,7 @@ private:
 	GLuint shader_program;
 	GLuint uniform_buffer;
 };
+
+#if 0
+	CORE_MAIN(uniform_buffer_block)
+#endif

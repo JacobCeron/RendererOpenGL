@@ -1,4 +1,5 @@
 #include "Core.h"
+#include <iostream>
 
 Core::Core()
 	: window(800, 600, "Test")
@@ -10,6 +11,8 @@ Core::Core(int width, int height, const char* name)
 
 void Core::Run()
 {
+	std::cout << glGetString(GL_VERSION) << std::endl;
+
 	Start();
 
 	float lastFrame{ 0.0f };

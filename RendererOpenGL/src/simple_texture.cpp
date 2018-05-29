@@ -93,3 +93,7 @@ private:
 	GLuint shader_program;
 	GLuint texture;
 };
+
+#if 0
+CORE_MAIN(simple_texture)
+#endif

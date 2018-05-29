@@ -82,3 +82,7 @@ private:
 	GLuint shader_program;
 	GLuint storage_buffer;
 };
+
+#if 0
+CORE_MAIN(shader_storage_buffer)
+#endif

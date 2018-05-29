@@ -66,3 +66,7 @@ public:
 private:
 	GLuint shader_program;
 };
+
+#if 0
+CORE_MAIN(simple_triangle)
+#endif

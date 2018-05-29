@@ -88,3 +88,7 @@ private:
 	GLuint shader_program;
 	GLuint atomic_counter;
 };
+
+#if 0
+CORE_MAIN(atomic_counter_variable)
+#endif

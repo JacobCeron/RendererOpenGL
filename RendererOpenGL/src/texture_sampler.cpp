@@ -134,3 +134,7 @@ private:
 	GLuint texture;
 	GLuint sampler;
 };
+
+#if 0
+CORE_MAIN(texture_sampler)
+#endif
