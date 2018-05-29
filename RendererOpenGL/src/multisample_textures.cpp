@@ -4,10 +4,6 @@ class multisample_texture
 	: public Core
 {
 public:
-	multisample_texture()
-		: Core(800, 600, "OpenGL")
-	{}
-
 	virtual void Start() override
 	{
 		const char* vertex_source
