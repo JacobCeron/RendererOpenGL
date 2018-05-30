@@ -11,7 +11,7 @@ public:
 		{
 			"#version 450 core\n"
 
-			"out gl_PerVertex\n"		// This must be appear in every shader source (that use gl_Position) to match correctly every single shader stage
+			"out gl_PerVertex\n"		// This must appear in every shader source (that use gl_Position) to match correctly every single shader stage
 			"{\n"	
 			"	vec4 gl_Position;\n"
 			"};\n"
