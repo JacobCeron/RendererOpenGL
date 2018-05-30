@@ -120,6 +120,6 @@ private:
 	GLuint texture;
 };
 
-#if 1
+#if 0
 CORE_MAIN(texture_wrap)
 #endif
