@@ -142,8 +142,10 @@
     <ClCompile Include="Classes\Renderer\Window.cpp" />
     <ClCompile Include="OpenGL\src\glad.c" />
     <ClCompile Include="src\atomic_counter_variable.cpp" />
+    <ClCompile Include="src\indexed_base_vertex.cpp" />
     <ClCompile Include="src\multisample_textures.cpp" />
     <ClCompile Include="src\point_size.cpp" />
+    <ClCompile Include="src\primitive_restart.cpp" />
     <ClCompile Include="src\shader_separate_programs.cpp" />
     <ClCompile Include="src\shader_status.cpp" />
     <ClCompile Include="src\shader_storage_buffer.cpp" />

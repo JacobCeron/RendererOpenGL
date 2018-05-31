@@ -1,6 +1,6 @@
 #include "../Classes/Renderer/Core.h"
 
-class simple_indexed_drawing_command
+class primitive_restart
 	: public Core
 {
 public:
@@ -10,27 +10,27 @@ public:
 		{
 			"#version 450 core\n"
 			"layout(location = 0) in vec4 vPos;\n"
-
+			
 			"out gl_PerVertex\n"
 			"{\n"
-			"	vec4 gl_Position;"
+			"	vec4 gl_Position;\n"
 			"};\n"
 
 			"out VS_OUT\n"
 			"{\n"
-			"	vec4 color;"
+			"	vec4 color;\n"
 			"}vs_out;\n"
 
-			"layout(std430, binding = 0) buffer TRANSFORMS\n"
+			"layout(std140, binding = 0) uniform TRANSFORMS\n"
 			"{\n"
 			"	mat4 Model;\n"
 			"	mat4 View;\n"
 			"	mat4 Projection;\n"
-			"};\n"
-			
+			"}trans;\n"
+
 			"void main()\n"
 			"{\n"
-			"	gl_Position = Projection * View * Model * vPos;\n"
+			"	gl_Position = trans.Projection * trans.View * trans.Model * vPos;\n"
 			"	vs_out.color = vPos + 0.5;\n"
 			"}"
 		};
@@ -38,10 +38,10 @@ public:
 		const char* fs_source
 		{
 			"#version 450 core\n"
-
+			
 			"in VS_OUT\n"
 			"{\n"
-			"	vec4 color;"
+			"	vec4 color;\n"
 			"}fs_in;\n"
 
 			"out vec4 FragColor;\n"
@@ -64,47 +64,42 @@ public:
 			vec3(-0.5f), vec3(0.5f, vec2(-0.5f)), vec3(vec2(0.5f), -0.5f), vec3(-0.5f, 0.5f, -0.5f)
 		};
 
+		// Cube's indices are reduced to half using triangle strip and enabling primitive restart
 		GLubyte i[]
 		{
 			0, 1, 3,
-			1, 2, 3,
-			3, 2, 7,
-			2, 6, 7,
-			4, 5, 7,
-			5, 6, 7,
-			0, 1, 4,
-			1, 5, 4,
+			2, 7, 6,
+			4, 5, 0,
 			1, 5, 2,
-			5, 6, 2,
-			4, 0, 7,
-			0, 3, 7
+			6, 7, 4,
+			0, 7, 3
 		};
 
 		glCreateBuffers(1, &vertex_buffer);
-		glNamedBufferStorage(vertex_buffer, sizeof(v), &v, GL_MAP_WRITE_BIT);
+		glNamedBufferStorage(vertex_buffer, sizeof(v), v, GL_MAP_WRITE_BIT);
 
-		glCreateBuffers(1, &element_buffer);
-		glNamedBufferStorage(element_buffer, sizeof(i), i, GL_MAP_WRITE_BIT);
+		glCreateBuffers(1, &index_buffer);
+		glNamedBufferStorage(index_buffer, sizeof(i), i, GL_MAP_WRITE_BIT);
 
 		glCreateVertexArrays(1, &vertex_array);
 		glVertexArrayAttribFormat(vertex_array, 0, 3, GL_FLOAT, GL_FALSE, 0);
 		glEnableVertexArrayAttrib(vertex_array, 0);
-		glVertexArrayAttribBinding(vertex_array, 0, 0);
 		glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(vec3));
 
-		glCreateBuffers(1, &storage_buffer);
-		glNamedBufferStorage(storage_buffer, sizeof(mat4) * 3, nullptr, GL_MAP_WRITE_BIT);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, storage_buffer);
+		glCreateBuffers(1, &uniform_buffer);
+		glNamedBufferStorage(uniform_buffer, sizeof(mat4) * 3, nullptr, GL_DYNAMIC_STORAGE_BIT);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniform_buffer);
 
 		mat4 View;
 		View = lookAt(vec3(vec2(0.0f), 3.0f), vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
 		mat4 Projection;
 		Projection = perspective(radians(45.0f), static_cast<float>(Window::current->getWidth()) / Window::current->getHeight(), 0.1f, 100.0f);
-		
-		mat4 *transforms = (mat4*)glMapNamedBufferRange(storage_buffer, sizeof(mat4), sizeof(mat4) * 2, GL_MAP_WRITE_BIT);
-		transforms[0] = View;
-		transforms[1] = Projection;
-		glUnmapNamedBuffer(storage_buffer);
+		glNamedBufferSubData(uniform_buffer, sizeof(mat4), sizeof(mat4), &View);
+		glNamedBufferSubData(uniform_buffer, sizeof(mat4) * 2, sizeof(mat4), &Projection);
+
+		glEnable(GL_PRIMITIVE_RESTART);
+		glPrimitiveRestartIndex(10);
+		glPrimitiveRestartIndex(13);
 	}
 
 	virtual void Update() override
@@ -114,16 +109,14 @@ public:
 
 		mat4 Model;
 		Model = translate(Model, vec3(vec2(0.0f), -3.0f));
-		Model = rotate(Model, time, vec3(vec2(1.0f), 0.0f));
-
-		void* ptr = glMapNamedBufferRange(storage_buffer, 0, sizeof(Model), GL_MAP_WRITE_BIT);
-		memcpy(ptr, &Model, sizeof(Model));
-		glUnmapNamedBuffer(storage_buffer);
+		Model = rotate(Model, time, vec3(1.0f, 1.0f, 1.0f));
+		glNamedBufferSubData(uniform_buffer, 0, sizeof(Model), &Model);
 
 		glBindProgramPipeline(program_pipeline);
 		glBindVertexArray(vertex_array);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void*)(sizeof(GLubyte) * 18));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
+		glDrawElements(GL_TRIANGLE_STRIP, 18, GL_UNSIGNED_BYTE, (void*)(sizeof(GLubyte) * 0));
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
 	virtual void End() override
@@ -132,9 +125,9 @@ public:
 		glDeleteProgram(fs_program);
 		glDeleteProgramPipelines(1, &program_pipeline);
 		glDeleteBuffers(1, &vertex_buffer);
-		glDeleteBuffers(1, &element_buffer);
-		glDeleteVertexArrays(1, &vertex_array);
-		glDeleteBuffers(1, &storage_buffer);
+		glDeleteBuffers(1, &vertex_array);
+		glDeleteBuffers(1, &index_buffer);
+		glDeleteBuffers(1, &uniform_buffer);
 	}
 
 private:
@@ -142,11 +135,11 @@ private:
 	GLuint fs_program;
 	GLuint program_pipeline;
 	GLuint vertex_buffer;
-	GLuint element_buffer;
+	GLuint index_buffer;
 	GLuint vertex_array;
-	GLuint storage_buffer;
+	GLuint uniform_buffer;
 };
 
-#if 0
-CORE_MAIN(simple_indexed_drawing_command)
+#if 1
+CORE_MAIN(primitive_restart)
 #endif
