@@ -143,9 +143,11 @@
     <ClCompile Include="OpenGL\src\glad.c" />
     <ClCompile Include="src\atomic_counter_variable.cpp" />
     <ClCompile Include="src\multisample_textures.cpp" />
+    <ClCompile Include="src\point_size.cpp" />
     <ClCompile Include="src\shader_separate_programs.cpp" />
     <ClCompile Include="src\shader_status.cpp" />
     <ClCompile Include="src\shader_storage_buffer.cpp" />
+    <ClCompile Include="src\simple_indexed_drawing_command.cpp" />
     <ClCompile Include="src\simple_texture.cpp" />
     <ClCompile Include="src\simple_texture_coords.cpp" />
     <ClCompile Include="src\simple_triangle.cpp" />

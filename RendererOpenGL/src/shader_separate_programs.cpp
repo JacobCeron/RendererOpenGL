@@ -127,7 +127,7 @@ public:
 		glDeleteShader(vs);
 		glDeleteShader(fs);
 
-		vec2 pos[]{ vec2(-0.5f), vec2(0.5f, -0.5f), vec2(-0.5f, 0.5f), vec2(0.5f, -0.5f), vec2(-0.5f, 0.5f), vec2(0.5f) };
+		vec2 pos[]{ vec2(-0.5f), vec2(0.5f, -0.5f), vec2(-0.5f, 0.5f), vec2(0.5f) };
 
 		glCreateBuffers(1, &vertex_buffer);
 		glNamedBufferStorage(vertex_buffer, sizeof(pos), pos, GL_MAP_WRITE_BIT);
@@ -155,7 +155,7 @@ public:
 
 		glBindProgramPipeline(program_pipeline);
 		glBindVertexArray(vertex_array);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 
 	virtual void End() override
@@ -178,6 +178,6 @@ private:
 	GLuint vertex_buffer;
 };
 
-#if 1
+#if 0
 CORE_MAIN(shader_separate_program)
 #endif

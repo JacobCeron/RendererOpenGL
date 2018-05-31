@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GLFW\glfw3.h>
-#include "../maths/types.h"
+#include "../maths/maths.h"
 
 class Window
 {

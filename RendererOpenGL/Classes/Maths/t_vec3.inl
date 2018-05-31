@@ -31,6 +31,12 @@ inline t_vec3<T, N>::t_vec3(const t_vec2<T, 2>& v, T _z)
 }
 
 template<typename T, size_t N>
+inline t_vec3<T, N>::t_vec3(T _x, const t_vec2<T, 2>& v)
+	: x(_x), y(v.x), z(v.y)
+{
+}
+
+template<typename T, size_t N>
 inline t_vec3<T, N>::t_vec3(const t_vec4<T, 4>& v)
 	: x(v.x), y(v.y), z(v.z)
 {

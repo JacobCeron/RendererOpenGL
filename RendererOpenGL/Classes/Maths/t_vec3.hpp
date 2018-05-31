@@ -22,6 +22,7 @@ struct t_vec3
 	t_vec3(T _x);
 	t_vec3(T _x, T _y, T _z);
 	t_vec3(const t_vec2<T, 2>& v, T _z);
+	t_vec3(T _x, const t_vec2<T, 2>& v);
 	t_vec3(const t_vec4<T, 4>& v);
 
 	T& operator[](size_t index);
