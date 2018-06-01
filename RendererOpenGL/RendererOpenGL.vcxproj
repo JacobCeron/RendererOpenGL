@@ -143,6 +143,7 @@
     <ClCompile Include="OpenGL\src\glad.c" />
     <ClCompile Include="src\atomic_counter_variable.cpp" />
     <ClCompile Include="src\indexed_base_vertex.cpp" />
+    <ClCompile Include="src\instance_attributes.cpp" />
     <ClCompile Include="src\multisample_textures.cpp" />
     <ClCompile Include="src\instancing.cpp" />
     <ClCompile Include="src\point_size.cpp" />
