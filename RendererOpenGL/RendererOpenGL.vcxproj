@@ -144,6 +144,7 @@
     <ClCompile Include="src\atomic_counter_variable.cpp" />
     <ClCompile Include="src\indexed_base_vertex.cpp" />
     <ClCompile Include="src\multisample_textures.cpp" />
+    <ClCompile Include="src\instancing.cpp" />
     <ClCompile Include="src\point_size.cpp" />
     <ClCompile Include="src\primitive_restart.cpp" />
     <ClCompile Include="src\shader_separate_programs.cpp" />

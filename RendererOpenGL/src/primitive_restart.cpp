@@ -140,6 +140,6 @@ private:
 	GLuint uniform_buffer;
 };
 
-#if 1
+#if 0
 CORE_MAIN(primitive_restart)
 #endif
