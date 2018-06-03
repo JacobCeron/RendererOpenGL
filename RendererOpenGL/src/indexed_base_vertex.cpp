@@ -131,7 +131,8 @@ public:
 		glBindProgramPipeline(program_pipeline);
 		glBindVertexArray(vertex_array);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-		glDrawElementsBaseVertex(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void*)(sizeof(GLubyte) * 0), 3); //glDrawElementsBaseVertex(..., indexbasevertex = 0) = glDrawElements()
+		glDrawElementsBaseVertex(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void*)(sizeof(GLubyte) * 0), 0); //glDrawElementsBaseVertex(..., indexbasevertex = 0) = glDrawElements()
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
 	virtual void End() override

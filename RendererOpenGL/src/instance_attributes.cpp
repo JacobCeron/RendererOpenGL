@@ -109,7 +109,7 @@ public:
 		glProgramUniformMatrix4fv(vs_program, 2, 1, GL_FALSE, &P[0][0]);
 
 		glBindVertexArray(vertex_array);
-		glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 4);
+		glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, 0, 4, 4, 0);
 	}
 
 	virtual void End() override
