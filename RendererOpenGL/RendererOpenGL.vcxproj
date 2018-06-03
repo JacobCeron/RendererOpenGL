@@ -156,6 +156,7 @@
     <ClCompile Include="src\simple_texture.cpp" />
     <ClCompile Include="src\simple_texture_coords.cpp" />
     <ClCompile Include="src\simple_triangle.cpp" />
+    <ClCompile Include="src\tessellation_quad.cpp" />
     <ClCompile Include="src\texture_filtering.cpp" />
     <ClCompile Include="src\texture_mipmap.cpp" />
     <ClCompile Include="src\texture_sampler.cpp" />

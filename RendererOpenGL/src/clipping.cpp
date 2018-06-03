@@ -30,12 +30,12 @@ public:
 			"}transform;\n"
 
 			"vec4 clip_plane1 = vec4(1.0, -1.0, 0.0, 0.0);\n"
-			"vec4 clip_plane2 = vec4(0.0, 1.0, 0.0, 0.0);\n"
+			"vec4 clip_plane2 = vec4(0.0, -0.2, 0.0, 0.0);\n"
 
 			"void main()\n"
 			"{\n"
 			"	gl_ClipDistance[0] = dot(vPos, clip_plane1);\n"
-			"	//gl_ClipDistance[1] = dot(vPos, clip_plane2);\n"
+			"	gl_ClipDistance[1] = dot(vPos, clip_plane2);\n"
 			"	gl_Position = transform.Projection * transform.View * transform.Model * vPos;\n"
 			"	vs_out.color = vPos + 0.5;\n"
 			"}"
@@ -154,6 +154,6 @@ private:
 	GLuint uniform_buffer;
 };
 
-#if 1
+#if 0
 CORE_MAIN(clipping)
 #endif
