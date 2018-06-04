@@ -183,6 +183,6 @@ private:
 	GLuint vertex_array;
 };
 
-#if 1
+#if 0
 CORE_MAIN(tessellation_quad)
 #endif
