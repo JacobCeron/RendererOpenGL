@@ -1,5 +1,4 @@
-#include "../Classes/Renderer/Core.h"
-#include "../Classes/Maths/maths.h"
+#include "../../Classes/Renderer/Core.h"
 
 class texture_mipmap
 	: public Core

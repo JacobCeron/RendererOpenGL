@@ -36,76 +36,85 @@
     <ClCompile Include="OpenGL\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\simple_triangle.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\atomic_counter_variable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\vertex_array_data.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\clipping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\uniform_buffer_block.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\indexed_base_vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shader_storage_buffer.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\instance_attributes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\atomic_counter_variable.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\instancing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\simple_texture.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\multisample_textures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\simple_texture_coords.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\point_size.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\texture_sampler.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\primitive_restart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\multisample_textures.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\shader_separate_programs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\texture_filtering.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\shader_status.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\texture_mipmap.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\shader_storage_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\texture_wrap.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\simple_indexed_drawing_command.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shader_status.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\simple_texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shader_separate_programs.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\simple_texture_coords.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\point_size.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\simple_triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\simple_indexed_drawing_command.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\tessellation_lines.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\indexed_base_vertex.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\tessellation_quad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\primitive_restart.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\tessellation_triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\instancing.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\texture_filtering.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\instance_attributes.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\texture_mipmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\clipping.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\texture_sampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\tessellation_quad.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\texture_wrap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\tessellation_triangle.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\uniform_buffer_block.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\tessellation_lines.cpp">
+    <ClCompile Include="src\OpenGLSuperBible7\vertex_array_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IñigoQuilezLearning\plane_deformations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Classes\Renderer\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\my_application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -153,6 +162,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Classes\Renderer\Enum\KeyCode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Renderer\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Renderer\Enum\ShaderType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Renderer\Enum\ShaderStatus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Renderer\Enum\ShaderStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

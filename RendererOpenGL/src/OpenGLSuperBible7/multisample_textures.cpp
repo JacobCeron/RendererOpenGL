@@ -1,6 +1,6 @@
-#include "../Classes/Renderer/Core.h"
+#include "../../Classes/Renderer/Core.h"
 
-class simple_texture_coords
+class multisample_texture
 	: public Core
 {
 public:
@@ -31,9 +31,10 @@ public:
 			"}fs_in;\n"
 			"out vec4 FragColor;\n"
 			"layout(binding = 0) uniform sampler2D s;\n"
+			"layout(binding = 1) uniform sampler2D t;\n"
 			"void main()\n"
 			"{\n"
-			"	FragColor = texture(s, fs_in.uv);\n"
+			"	FragColor = mix(texture(s, fs_in.uv), texture(t, fs_in.uv), 0.5);\n"
 			"}"
 		};
 
@@ -68,7 +69,7 @@ public:
 		vertices v;
 
 		glCreateBuffers(1, &vertex_buffer);
-		glNamedBufferStorage(vertex_buffer, sizeof(vertices), &v, GL_DYNAMIC_STORAGE_BIT);
+		glNamedBufferStorage(vertex_buffer, sizeof(v), &v, GL_MAP_WRITE_BIT);
 
 		glCreateVertexArrays(1, &vertex_array);
 		glVertexArrayAttribFormat(vertex_array, 0, 2, GL_FLOAT, GL_FALSE, offsetof(vertices, pos));
@@ -79,14 +80,23 @@ public:
 		glVertexArrayAttribBinding(vertex_array, 1, 0);
 		glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(vec2));
 
-		glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-		glTextureStorage2D(texture, 1, GL_RGBA32F, 250, 250);
+		glCreateTextures(GL_TEXTURE_2D, 2, texture);
+		glTextureStorage2D(texture[0], 1, GL_RGBA32F, 25, 25);
 
-		vec4 *data = new vec4[250 * 250];
-		generate_texture(data, 250, 250);
+		vec4* data = new vec4[25 * 25];
+		generate_texture(data, 25, 25);
 
-		glTextureSubImage2D(texture, 0, 0, 0, 250, 250, GL_RGBA, GL_FLOAT, data);
-		glBindTextureUnit(0, texture);
+		glTextureSubImage2D(texture[0], 0, 0, 0, 25, 25, GL_RGBA, GL_FLOAT, data);
+		glTextureParameteri(texture[0], GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glBindTextureUnit(0, texture[0]);
+
+		glTextureStorage2D(texture[1], 1, GL_RGBA32F, 25, 25);
+		
+		generate_texture2(data, 25, 25);
+
+		glTextureSubImage2D(texture[1], 0, 0, 0, 25, 25, GL_RGBA, GL_FLOAT, data);
+		glTextureParameteri(texture[1], GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glBindTextureUnit(1, texture[1]);
 	}
 
 	virtual void Update() override
@@ -101,7 +111,7 @@ public:
 		glDeleteProgram(shader_program);
 		glDeleteBuffers(1, &vertex_buffer);
 		glDeleteVertexArrays(1, &vertex_array);
-		glDeleteTextures(1, &texture);
+		glDeleteTextures(2, texture);
 	}
 
 	void generate_texture(vec4* data, size_t w, size_t h)
@@ -118,13 +128,28 @@ public:
 		}
 	}
 
+	void generate_texture2(vec4* data, size_t w, size_t h)
+	{
+		for (size_t i{ 0 }; i < h; i++)
+		{
+			for (size_t j{ 0 }; j < w; j++)
+			{
+				if (j % 2 == 0 && i % 2 == 0)
+					data[j + w * i] = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+				else
+					data[j + w * i] = vec4(1.0f, 1.0f, 0.0f, 0.0f);
+			}
+		}
+	}
+
 private:
 	GLuint shader_program;
 	GLuint vertex_array;
 	GLuint vertex_buffer;
-	GLuint texture;
+	GLuint texture[2];
+	GLuint sampler;
 };
 
 #if 0
-CORE_MAIN(simple_texture_coords)
+CORE_MAIN(multisample_texture)
 #endif

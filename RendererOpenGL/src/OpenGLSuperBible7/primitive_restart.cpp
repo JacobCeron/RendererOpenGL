@@ -1,6 +1,6 @@
-#include "../Classes/Renderer/Core.h"
+#include "../../Classes/Renderer/Core.h"
 
-class clipping
+class primitive_restart
 	: public Core
 {
 public:
@@ -14,7 +14,6 @@ public:
 			"out gl_PerVertex\n"
 			"{\n"
 			"	vec4 gl_Position;\n"
-			"	vec4 gl_ClipDistance[];\n"
 			"};\n"
 
 			"out VS_OUT\n"
@@ -27,16 +26,11 @@ public:
 			"	mat4 Model;\n"
 			"	mat4 View;\n"
 			"	mat4 Projection;\n"
-			"}transform;\n"
-
-			"vec4 clip_plane1 = vec4(1.0, -1.0, 0.0, 0.0);\n"
-			"vec4 clip_plane2 = vec4(0.0, -0.2, 0.0, 0.0);\n"
+			"}trans;\n"
 
 			"void main()\n"
 			"{\n"
-			"	gl_ClipDistance[0] = dot(vPos, clip_plane1);\n"
-			"	gl_ClipDistance[1] = dot(vPos, clip_plane2);\n"
-			"	gl_Position = transform.Projection * transform.View * transform.Model * vPos;\n"
+			"	gl_Position = trans.Projection * trans.View * trans.Model * vPos;\n"
 			"	vs_out.color = vPos + 0.5;\n"
 			"}"
 		};
@@ -51,7 +45,7 @@ public:
 			"}fs_in;\n"
 
 			"out vec4 FragColor;\n"
-			
+
 			"void main()\n"
 			"{\n"
 			"	FragColor = fs_in.color;\n"
@@ -66,24 +60,15 @@ public:
 
 		vec3 v[]
 		{
-			vec3(-0.5f, -0.5f,	0.5f),	vec3(0.5f, -0.5f,  0.5f),	vec3(0.5f, 0.5f,  0.5f),	vec3(-0.5f, 0.5f,  0.5f),
-			vec3(-0.5f, -0.5f, -0.5f),	vec3(0.5f, -0.5f, -0.5f),	vec3(0.5f, 0.5f, -0.5f),	vec3(-0.5f, 0.5f, -0.5f)
+			vec3(-3.0f, 1.0f, 0.0f),	vec3(-2.0f, -1.0f, 0.0f),	vec3(-1.0f, 1.0f, 0.0f),	vec3(0.0f, -1.0f, 0.0f),
+			vec3( 1.0f, 1.0f, 0.0f),	vec3( 2.0f, -1.0f, 0.0f),	vec3( 3.0f, 1.0f, 0.0f)
 		};
 
 		GLubyte i[]
 		{
-			0, 1, 3,
-			1, 2, 3,
-			3, 2, 7,
-			2, 6, 7,
-			4, 5, 7,
-			5, 6, 7,
-			0, 1, 4,
-			1, 5, 4,
-			1, 5, 2,
-			5, 6, 2,
-			4, 0, 7,
-			0, 3, 7
+			0, 1, 2,
+			3, 4, 5,
+			6, 4
 		};
 
 		glCreateBuffers(1, &vertex_buffer);
@@ -99,21 +84,18 @@ public:
 		glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(vec3));
 
 		glCreateBuffers(1, &uniform_buffer);
-		glNamedBufferStorage(uniform_buffer, sizeof(mat4) * 3, nullptr, GL_MAP_WRITE_BIT);
+		glNamedBufferStorage(uniform_buffer, sizeof(mat4) * 3, nullptr, GL_DYNAMIC_STORAGE_BIT);
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniform_buffer);
 
 		mat4 View;
-		View = lookAt(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
+		View = lookAt(vec3(vec2(0.0f), 3.0f), vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
 		mat4 Projection;
 		Projection = perspective(radians(45.0f), static_cast<float>(Window::current->getWidth()) / Window::current->getHeight(), 0.1f, 100.0f);
+		glNamedBufferSubData(uniform_buffer, sizeof(mat4), sizeof(mat4), &View);
+		glNamedBufferSubData(uniform_buffer, sizeof(mat4) * 2, sizeof(mat4), &Projection);
 
-		mat4* transforms = static_cast<mat4*>(glMapNamedBufferRange(uniform_buffer, sizeof(mat4), sizeof(mat4) * 2, GL_MAP_WRITE_BIT));
-		transforms[0] = View;
-		transforms[1] = Projection;
-		glUnmapNamedBuffer(uniform_buffer);
-
-		glEnable(GL_CLIP_DISTANCE0);
-		glEnable(GL_CLIP_DISTANCE1);
+		glEnable(GL_PRIMITIVE_RESTART);
+		glPrimitiveRestartIndex(0x03);
 	}
 
 	virtual void Update() override
@@ -121,16 +103,15 @@ public:
 		static float time{ 0.0f };
 		time += Time::deltaTime;
 
-		mat4* Model = static_cast<mat4*>(glMapNamedBufferRange(uniform_buffer, 0, sizeof(mat4), GL_MAP_WRITE_BIT));
-		Model[0] = translate(mat4(), vec3(0.0f, 0.0f, -3.0f));
-		Model[0] = rotate(Model[0], time, vec3(0, 1, 1));
-		glUnmapNamedBuffer(uniform_buffer);
+		mat4 Model;
+		Model = translate(Model, vec3(vec2(0.0f), -3.0f));
+		glNamedBufferSubData(uniform_buffer, 0, sizeof(Model), &Model);
 
 		glBindProgramPipeline(program_pipeline);
 		glBindVertexArray(vertex_array);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-		glDrawElementsInstancedBaseVertex(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void*)(sizeof(GLuint) * 0), 1, 0);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDrawElements(GL_TRIANGLE_STRIP, 8, GL_UNSIGNED_BYTE, (void*)(sizeof(GLubyte) * 0));
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
 	virtual void End() override
@@ -155,5 +136,5 @@ private:
 };
 
 #if 0
-CORE_MAIN(clipping)
+CORE_MAIN(primitive_restart)
 #endif

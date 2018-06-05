@@ -1,8 +1,7 @@
-#include "../Classes/Renderer/Core.h"
-#include "../Classes/Renderer/Input.h"
+#include "../../Classes/Renderer/Core.h"
+#include "../../Classes/Renderer/Input.h"
 
 #include <iostream>
-
 
 class instancing
 	: public Core

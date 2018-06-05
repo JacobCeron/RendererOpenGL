@@ -1,4 +1,4 @@
-#include "../Classes/Renderer/Core.h"
+#include "../../Classes/Renderer/Core.h"
 
 class instance_attributes
 	: public Core

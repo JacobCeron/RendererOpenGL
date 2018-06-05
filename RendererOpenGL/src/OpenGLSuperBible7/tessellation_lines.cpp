@@ -1,4 +1,4 @@
-#include "../Classes/Renderer/Core.h"
+#include "../../Classes/Renderer/Core.h"
 
 class tessellation_lines
 	: public Core
@@ -130,6 +130,6 @@ private:
 	GLuint vertex_array;
 };
 
-#if 1
+#if 0
 CORE_MAIN(tessellation_lines)
 #endif

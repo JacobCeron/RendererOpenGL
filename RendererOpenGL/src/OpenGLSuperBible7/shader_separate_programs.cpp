@@ -1,5 +1,5 @@
-#include "../Classes/Renderer/Core.h"
-#include "../Classes/Renderer/Input.h"
+#include "../../Classes/Renderer/Core.h"
+#include "../../Classes/Renderer/Input.h"
 
 class shader_separate_program
 	: public Core

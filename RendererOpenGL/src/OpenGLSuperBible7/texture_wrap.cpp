@@ -1,4 +1,4 @@
-#include "../Classes/Renderer/Core.h"
+#include "../../Classes/Renderer/Core.h"
 
 class texture_wrap
 	: public Core

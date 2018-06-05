@@ -1,6 +1,6 @@
-#include "../Classes/Renderer/Core.h"
+#include "../../Classes/Renderer/Core.h"
 
-class texture_sampler
+class vertex_array_data
 	: public Core
 {
 public:
@@ -10,15 +10,15 @@ public:
 		{
 			"#version 450 core\n"
 			"layout(location = 0) in vec4 vPos;\n"
-			"layout(location = 1) in vec2 vUV;\n"
+			"layout(location = 1) in vec4 vColor;\n"
 			"out VS_OUT\n"
 			"{\n"
-			"	vec2 uv;\n"
+			"	vec4 color;\n"
 			"}vs_out;\n"
 			"void main()\n"
 			"{\n"
 			"	gl_Position = vPos;\n"
-			"	vs_out.uv = vUV;\n"
+			"	vs_out.color = vColor;\n"
 			"}"
 		};
 
@@ -27,13 +27,12 @@ public:
 			"#version 450 core\n"
 			"in VS_OUT\n"
 			"{\n"
-			"	vec2 uv;\n"
+			"	vec4 color;\n"
 			"}fs_in;\n"
 			"out vec4 FragColor;\n"
-			"layout(binding = 0) uniform sampler2D s;\n"
 			"void main()\n"
 			"{\n"
-			"	FragColor = texture(s, fs_in.uv);\n"
+			"	FragColor = fs_in.color;\n"
 			"}"
 		};
 
@@ -55,82 +54,55 @@ public:
 
 		struct vertices
 		{
-			vec2 pos[4]
+			vec2 pos[3]
 			{
-				vec2(-1.0f, -1.0f), vec2(1.0f, -1.0f), vec2(-1.0f, 1.0f), vec2(1.0f, 1.0f)
+				vec2(-0.5f), vec2(0.5f, -0.5f), vec2(0.0f, 0.5f)
 			};
-			vec2 uv[4]
+
+			vec3 color[3]
 			{
-				vec2(0.0f), vec2(1.0f, 0.0f), vec2(0.0f, 1.0f), vec2(1.0f)
+				vec3(1.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f)
 			};
 		};
 
 		vertices v;
 
 		glCreateBuffers(1, &vertex_buffer);
-		glNamedBufferStorage(vertex_buffer, sizeof(v), &v, GL_MAP_WRITE_BIT);
+		glNamedBufferStorage(vertex_buffer, sizeof(vertices), &v, GL_MAP_WRITE_BIT);
 
 		glCreateVertexArrays(1, &vertex_array);
 		glVertexArrayAttribFormat(vertex_array, 0, 2, GL_FLOAT, GL_FALSE, offsetof(vertices, pos));
 		glEnableVertexArrayAttrib(vertex_array, 0);
 		glVertexArrayAttribBinding(vertex_array, 0, 0);
-		glVertexArrayAttribFormat(vertex_array, 1, 2, GL_FLOAT, GL_FALSE, offsetof(vertices, uv));
-		glEnableVertexArrayAttrib(vertex_array, 1);
-		glVertexArrayAttribBinding(vertex_array, 1, 0);
 		glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(vec2));
+		glVertexArrayAttribFormat(vertex_array, 1, 3, GL_FLOAT, GL_FALSE, offsetof(vertices, color));
+		glEnableVertexArrayAttrib(vertex_array, 1);
+		glVertexArrayAttribBinding(vertex_array, 1, 1);
+		glVertexArrayVertexBuffer(vertex_array, 1, vertex_buffer, 0, sizeof(vec3));
 
-		glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-		glTextureStorage2D(texture, 1, GL_RGBA32F, 25, 25);
-
-		vec4* data = new vec4[25 * 25];
-		generate_texture(data, 25, 25);
-
-		glTextureSubImage2D(texture, 0, 0, 0, 25, 25, GL_RGBA, GL_FLOAT, data);
-		glBindTextureUnit(0, texture);
-		
-		glCreateSamplers(1, &sampler);
-		glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glBindSampler(0, sampler);
+		Window::current->setColor(vec4(0.5f));
 	}
 
 	virtual void Update() override
 	{
 		glUseProgram(shader_program);
 		glBindVertexArray(vertex_array);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 
 	virtual void End() override
 	{
 		glDeleteProgram(shader_program);
-		glDeleteBuffers(1, &vertex_buffer);
 		glDeleteVertexArrays(1, &vertex_array);
-		glDeleteTextures(1, &texture);
-		glDeleteSamplers(1, &sampler);
-	}
-
-	void generate_texture(vec4* data, size_t w, size_t h)
-	{
-		for (size_t i{ 0 }; i < h; i++)
-		{
-			for (size_t j{ 0 }; j < w; j++)
-			{
-				if (j % 2 == 0 && i % 2 == 0)
-					data[j + w * i] = vec4(1.0f);
-				else
-					data[j + w * i] = vec4(0.0f);
-			}
-		}
+		glDeleteBuffers(1, &vertex_buffer);
 	}
 
 private:
 	GLuint shader_program;
 	GLuint vertex_array;
 	GLuint vertex_buffer;
-	GLuint texture;
-	GLuint sampler;
 };
 
 #if 0
-CORE_MAIN(texture_sampler)
+CORE_MAIN(vertex_array_data)
 #endif

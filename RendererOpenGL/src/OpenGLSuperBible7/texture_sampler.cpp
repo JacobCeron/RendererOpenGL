@@ -1,6 +1,6 @@
-#include "../Classes/Renderer/Core.h"
+#include "../../Classes/Renderer/Core.h"
 
-class texture_filtering
+class texture_sampler
 	: public Core
 {
 public:
@@ -80,15 +80,17 @@ public:
 		glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(vec2));
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-		glTextureStorage2D(texture, 1, GL_RGBA32F, 120, 120);
+		glTextureStorage2D(texture, 1, GL_RGBA32F, 25, 25);
 
-		vec4* data = new vec4[120 * 120];
-		generate_texture(data, 120, 120);
+		vec4* data = new vec4[25 * 25];
+		generate_texture(data, 25, 25);
 
-		glTextureSubImage2D(texture, 0, 0, 0, 120, 120, GL_RGBA, GL_FLOAT, data);
-		glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTextureSubImage2D(texture, 0, 0, 0, 25, 25, GL_RGBA, GL_FLOAT, data);
 		glBindTextureUnit(0, texture);
+		
+		glCreateSamplers(1, &sampler);
+		glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glBindSampler(0, sampler);
 	}
 
 	virtual void Update() override
@@ -101,9 +103,10 @@ public:
 	virtual void End() override
 	{
 		glDeleteProgram(shader_program);
-		glDeleteVertexArrays(1, &vertex_array);
 		glDeleteBuffers(1, &vertex_buffer);
+		glDeleteVertexArrays(1, &vertex_array);
 		glDeleteTextures(1, &texture);
+		glDeleteSamplers(1, &sampler);
 	}
 
 	void generate_texture(vec4* data, size_t w, size_t h)
@@ -113,9 +116,9 @@ public:
 			for (size_t j{ 0 }; j < w; j++)
 			{
 				if (j % 2 == 0 && i % 2 == 0)
-					data[j + w * i] = vec4(1.0f, 1.0f, 0.0f, 0.0f);
+					data[j + w * i] = vec4(1.0f);
 				else
-					data[j + w * i] = vec4(0.0f, 1.0f, 1.0f, 0.0f);
+					data[j + w * i] = vec4(0.0f);
 			}
 		}
 	}
@@ -125,8 +128,9 @@ private:
 	GLuint vertex_array;
 	GLuint vertex_buffer;
 	GLuint texture;
+	GLuint sampler;
 };
 
 #if 0
-CORE_MAIN(texture_filtering)
+CORE_MAIN(texture_sampler)
 #endif

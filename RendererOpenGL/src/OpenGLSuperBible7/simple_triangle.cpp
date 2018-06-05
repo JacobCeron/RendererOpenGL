@@ -1,4 +1,4 @@
-#include "../Classes/Renderer/Core.h"
+#include "../../Classes/Renderer/Core.h"
 
 class simple_triangle
 	: public Core

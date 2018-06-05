@@ -1,5 +1,4 @@
-#include "../Classes/Renderer/Core.h"
-#include "../Classes/Maths/maths.h"
+#include "../../Classes/Renderer/Core.h"
 
 class uniform_buffer_block
 	: public Core

@@ -1,6 +1,4 @@
-#include "../Classes/Renderer/Core.h"
-
-// Still having problems in separate pipeline, so ignore it for now
+#include "../../Classes/Renderer/Core.h"
 
 class tessellation_quad
 	: public Core
@@ -24,7 +22,7 @@ public:
 			"}"
 		};
 
-		const char* tsc_source
+		const char* tcs_source
 		{
 			"#version 450 core\n"
 			"layout(vertices = 4) out;\n"
@@ -54,7 +52,7 @@ public:
 			"}\n"
 		};
 
-		const char* tse_source
+		const char* tes_source
 		{
 			"#version 450 core\n"
 			"layout(quads) in;\n"
@@ -96,47 +94,20 @@ public:
 			
 			"void main()\n"
 			"{\n"
-			"	FragColor = fs_in.color + 0.5;\n"
+			"	FragColor = (fs_in.color + 0.5);\n"
 			"}"
 		};
 
-		GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vs, 1, &vs_source, nullptr);
-		glCompileShader(vs);
-
-		GLuint tsc = glCreateShader(GL_TESS_CONTROL_SHADER);
-		glShaderSource(tsc, 1, &tsc_source, nullptr);
-		glCompileShader(tsc);
-		
-		GLuint tse = glCreateShader(GL_TESS_EVALUATION_SHADER);
-		glShaderSource(tse, 1, &tse_source, nullptr);
-		glCompileShader(tse);
-
-		GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fs, 1, &fs_source, nullptr);
-		glCompileShader(fs);
-
-		program = glCreateProgram();
-		glAttachShader(program, vs);
-		glAttachShader(program, tsc);
-		glAttachShader(program, tse);
-		glAttachShader(program, fs);
-
-		glLinkProgram(program);
-
-		/*vs_program = glCreateProgram();
-		glAttachShader(vs_program, vs);
-		glAttachShader(vs_program, tsc);
-		glAttachShader(vs_program, tse);
-
-		glProgramParameteri(vs_program, GL_PROGRAM_SEPARABLE, GL_TRUE);
-		glLinkProgram(vs_program);
-
+		vs_program = glCreateShaderProgramv(GL_VERTEX_SHADER, 1, &vs_source);
+		tcs_program = glCreateShaderProgramv(GL_TESS_CONTROL_SHADER, 1, &tcs_source);
+		tes_program = glCreateShaderProgramv(GL_TESS_EVALUATION_SHADER, 1, &tes_source);
 		fs_program = glCreateShaderProgramv(GL_FRAGMENT_SHADER, 1, &fs_source);
 
 		glCreateProgramPipelines(1, &program_pipeline);
 		glUseProgramStages(program_pipeline, GL_VERTEX_SHADER_BIT, vs_program);
-		glUseProgramStages(program_pipeline, GL_FRAGMENT_SHADER_BIT, fs_program);*/
+		glUseProgramStages(program_pipeline, GL_TESS_CONTROL_SHADER_BIT, tcs_program);
+		glUseProgramStages(program_pipeline, GL_TESS_EVALUATION_SHADER_BIT, tes_program);
+		glUseProgramStages(program_pipeline, GL_FRAGMENT_SHADER_BIT, fs_program);
 
 		vec2 v[]
 		{
@@ -158,27 +129,28 @@ public:
 
 	virtual void Update() override
 	{
-		//glBindProgramPipeline(program_pipeline);
-		glUseProgram(program);
+		glBindProgramPipeline(program_pipeline);
 		glBindVertexArray(vertex_array);
 		glDrawArrays(GL_PATCHES, 0, 4);
 	}
 
 	virtual void End() override
 	{
-		/*glDeleteProgram(vs_program);
+		glDeleteProgram(vs_program);
+		glDeleteProgram(tcs_program);
+		glDeleteProgram(tes_program);
 		glDeleteProgram(fs_program);
-		glDeleteProgramPipelines(1, &program_pipeline);*/
-		glDeleteProgram(program);
+		glDeleteProgramPipelines(1, &program_pipeline);
 		glDeleteBuffers(1, &vertex_buffer);
 		glDeleteBuffers(1, &vertex_array);
 	}
 	
 private:
-	GLuint program;
-	/*GLuint vs_program;
+	GLuint vs_program;
+	GLuint tcs_program;
+	GLuint tes_program;
 	GLuint fs_program;
-	GLuint program_pipeline;*/
+	GLuint program_pipeline;
 	GLuint vertex_buffer;
 	GLuint vertex_array;
 };
