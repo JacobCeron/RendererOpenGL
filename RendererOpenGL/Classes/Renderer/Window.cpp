@@ -19,6 +19,7 @@ void Window::init()
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 	glfwSetCursorPosCallback(window, cursorPosCallback);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	assert(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) && "Couldn't initilaize OpenGL");
 
@@ -56,6 +57,11 @@ int Window::getHeight()
 bool Window::close()
 {
 	return glfwWindowShouldClose(window);
+}
+
+void Window::shouldClose(bool value)
+{
+	glfwSetWindowShouldClose(window, value);
 }
 
 GLFWwindow* Window::getWindow()

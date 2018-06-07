@@ -23,6 +23,7 @@ public:
 	int getWidth();
 	int getHeight();
 	bool close();
+	void shouldClose(bool value);
 	~Window();
 private:
 	GLFWwindow* getWindow();

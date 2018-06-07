@@ -149,6 +149,7 @@
     <ClCompile Include="src\OpenGLSuperBible7\instance_attributes.cpp" />
     <ClCompile Include="src\OpenGLSuperBible7\multisample_textures.cpp" />
     <ClCompile Include="src\OpenGLSuperBible7\instancing.cpp" />
+    <ClCompile Include="src\OpenGLSuperBible7\tessellate_terrain.cpp" />
     <ClCompile Include="src\OpenGLSuperBible7\point_size.cpp" />
     <ClCompile Include="src\OpenGLSuperBible7\primitive_restart.cpp" />
     <ClCompile Include="src\OpenGLSuperBible7\shader_separate_programs.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="src\OpenGLSuperBible7\uniform_buffer_block.cpp" />
     <ClCompile Include="src\OpenGLSuperBible7\vertex_array_data.cpp" />
     <ClCompile Include="src\test\my_application.cpp" />
+    <ClCompile Include="src\test\tessellation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Classes\maths\maths.h" />

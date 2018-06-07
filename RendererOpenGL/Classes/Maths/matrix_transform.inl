@@ -1,3 +1,5 @@
+#include <iostream>
+
 template<typename T>
 inline t_mat<T, t_vec4, 4> translate(const t_mat<T, t_vec4, 4>& m, const t_vec3<T, 3>& v)
 {
@@ -53,23 +55,23 @@ inline t_mat<T, t_vec4, 4> lookAt(const t_vec3<T, 3>& eye, const t_vec3<T, 3>& t
 	t_vec3<T, 3> xAxis(normalize(cross(up, zAxis)));
 	t_vec3<T, 3> yAxis(cross(zAxis, xAxis));
 
-	t_mat<T, t_vec4, 4> rotate;
-	rotate[0][0] = xAxis.x;
-	rotate[1][0] = xAxis.y;
-	rotate[2][0] = xAxis.z;
-	rotate[0][1] = yAxis.x;
-	rotate[1][1] = yAxis.y;
-	rotate[2][1] = yAxis.z;
-	rotate[0][2] = zAxis.x;
-	rotate[1][2] = zAxis.y;
-	rotate[2][2] = zAxis.z;
+	t_mat<T, t_vec4, 4> r;
+	r[0][0] = xAxis.x;
+	r[0][1] = xAxis.y;
+	r[0][2] = xAxis.z;
+	r[1][0] = yAxis.x;
+	r[1][1] = yAxis.y;
+	r[1][2] = yAxis.z;
+	r[2][0] = zAxis.x;
+	r[2][1] = zAxis.y;
+	r[2][2] = zAxis.z;
 
 	t_mat<T, t_vec4, 4> translate;
-	translate[0][3] = -eye.x;
-	translate[1][3] = -eye.y;
-	translate[2][3] = -eye.z;
+	translate[3][0] = -eye.x;
+	translate[3][1] = -eye.y;
+	translate[3][2] = -eye.z;
 
-	return rotate * translate;
+	return translate * r;
 }
 
 template<typename T>
